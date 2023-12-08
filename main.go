@@ -16,7 +16,7 @@ func main() {
 	r := NewMicroservice()
 	r.Use(loggingMiddleware)
 
-	r.GET("/{id}", func(c IContext) {
+	r.GET("/:id", func(c IContext) {
 		c.JSON(http.StatusOK, map[string]any{
 			"id": c.Param("id"),
 		})

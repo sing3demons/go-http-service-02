@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"regexp"
 	"syscall"
 	"time"
 
@@ -57,6 +58,7 @@ func (ms *microservice) Get(path string, h handlerFunc) {
 }
 
 func (ms *microservice) GET(path string, h handlerFunc, mwf ...mux.MiddlewareFunc) {
+	path = regexp.MustCompile(`/:([^/]+)`).ReplaceAllString(path, "/{$1}")
 	r := ms.Router.PathPrefix(path).Subrouter()
 	r.Use(mwf...)
 	r.NewRoute().HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -73,6 +75,7 @@ func (ms *microservice) POST(path string, h handlerFunc, mwf ...mux.MiddlewareFu
 }
 
 func (ms *microservice) PUT(path string, h handlerFunc, mwf ...mux.MiddlewareFunc) {
+	path = regexp.MustCompile(`/:([^/]+)`).ReplaceAllString(path, "/{$1}")
 	r := ms.Router.PathPrefix(path).Subrouter()
 	r.Use(mwf...)
 	r.NewRoute().HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -81,6 +84,7 @@ func (ms *microservice) PUT(path string, h handlerFunc, mwf ...mux.MiddlewareFun
 }
 
 func (ms *microservice) PATCH(path string, h handlerFunc, mwf ...mux.MiddlewareFunc) {
+	path = regexp.MustCompile(`/:([^/]+)`).ReplaceAllString(path, "/{$1}")
 	r := ms.Router.PathPrefix(path).Subrouter()
 	r.Use(mwf...)
 	r.NewRoute().HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -89,6 +93,7 @@ func (ms *microservice) PATCH(path string, h handlerFunc, mwf ...mux.MiddlewareF
 }
 
 func (ms *microservice) DELETE(path string, h handlerFunc, mwf ...mux.MiddlewareFunc) {
+	path = regexp.MustCompile(`/:([^/]+)`).ReplaceAllString(path, "/{$1}")
 	r := ms.Router.PathPrefix(path).Subrouter()
 	r.Use(mwf...)
 	r.NewRoute().HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
