@@ -1,4 +1,4 @@
-package main
+package mux
 
 import (
 	"encoding/json"
@@ -6,22 +6,15 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/sing3demons/go-http-service/router/ctx"
 )
-
-type IContext interface {
-	JSON(code int, obj any)
-	BodyParser(obj any) error
-	ReadBody() ([]byte, error)
-	Param(key string) string
-	Query(key string) string
-}
 
 type myContext struct {
 	w http.ResponseWriter
 	r *http.Request
 }
 
-func NewMyContext(w http.ResponseWriter, r *http.Request) IContext {
+func NewMyContext(w http.ResponseWriter, r *http.Request) ctx.IContext {
 	return &myContext{w, r}
 }
 

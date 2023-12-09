@@ -1,4 +1,4 @@
-package ms
+package gin
 
 import (
 	"context"
@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sing3demons/go-http-service/router/ctx"
 )
 
 type IRouter interface {
@@ -24,15 +25,21 @@ type ginRouter struct {
 	*gin.Engine
 }
 
-func NewRouter() IRouter {
+func NewMicroservice() *ginRouter {
 	r := gin.Default()
 	return &ginRouter{r}
 }
 
-type handlerFunc func(c IMyContext)
-
+type handlerFunc func(c ctx.IContext)
+type HandlerFunc func(c ctx.IContext)
 func (r *ginRouter) GET(path string, h handlerFunc) {
 	r.Engine.GET(path, func(ctx *gin.Context) {
+		h(NewMyContext(ctx))
+	})
+}
+
+func (r *ginRouter) POST(path string, h handlerFunc) {
+	r.Engine.POST(path, func(ctx *gin.Context) {
 		h(NewMyContext(ctx))
 	})
 }
