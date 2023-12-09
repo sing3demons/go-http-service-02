@@ -24,6 +24,10 @@ func (ctx *myContext) JSON(code int, obj any) {
 	json.NewEncoder(ctx.w).Encode(obj)
 }
 
+func (ctx *myContext) RequestURI() string {
+	return ctx.r.RequestURI
+}
+
 func (ctx *myContext) BodyParser(obj any) error {
 	decoder := json.NewDecoder(ctx.r.Body)
 	decoder.UseNumber()

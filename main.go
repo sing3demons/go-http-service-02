@@ -1,15 +1,29 @@
 package main
 
 import (
+	"log"
 	"net/http"
 
+	"github.com/sing3demons/go-http-service/router"
 	"github.com/sing3demons/go-http-service/router/ctx"
 	"github.com/sing3demons/go-http-service/router/gin"
+	"github.com/sing3demons/go-http-service/router/mux"
 )
 
+func NewGinRouter() router.IMicroservice {
+	return gin.NewMicroservice()
+}
+
+func NewMuxRouter() router.IMicroservice {
+	return mux.NewMicroservice()
+}
+
 func main() {
-	// r := mux.NewMicroservice()
-	r := gin.NewMicroservice()
+	r := NewGinRouter()
+	// r := NewMuxRouter()
+	r.Use(func(c ctx.IContext) {
+		log.Println(c.RequestURI())
+	})
 
 	r.GET("/:id", func(c ctx.IContext) {
 		c.JSON(http.StatusOK, map[string]any{
@@ -17,18 +31,20 @@ func main() {
 		})
 	})
 
-	r.GET("/", Home)
-
-	r.POST("/post", func(c ctx.IContext) {
-		var req struct {
-			Name string `json:"name"`
-		}
-		if err := c.BodyParser(&req); err != nil {
-			c.JSON(http.StatusBadRequest, map[string]any{"msg": err.Error()})
-			return
-		}
-		c.JSON(http.StatusOK, req)
+	r.GET("/", Home, func(c ctx.IContext) {
+		log.Println("middleware")
 	})
+
+	// r.POST("/post", func(c ctx.IContext) {
+	// 	var req struct {
+	// 		Name string `json:"name"`
+	// 	}
+	// 	if err := c.BodyParser(&req); err != nil {
+	// 		c.JSON(http.StatusBadRequest, map[string]any{"msg": err.Error()})
+	// 		return
+	// 	}
+	// 	c.JSON(http.StatusOK, req)
+	// })
 	r.StartHttp()
 }
 

@@ -12,36 +12,127 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sing3demons/go-http-service/router/ctx"
+	"github.com/sing3demons/go-http-service/router"
 )
-
-type IRouter interface {
-	GET(path string, h handlerFunc)
-
-	StartHttp()
-}
 
 type ginRouter struct {
 	*gin.Engine
 }
 
-func NewMicroservice() *ginRouter {
+func NewMicroservice() router.IMicroservice {
 	r := gin.Default()
 	return &ginRouter{r}
 }
 
-type handlerFunc func(c ctx.IContext)
-type HandlerFunc func(c ctx.IContext)
-func (r *ginRouter) GET(path string, h handlerFunc) {
-	r.Engine.GET(path, func(ctx *gin.Context) {
-		h(NewMyContext(ctx))
-	})
+func (r *ginRouter) GET(path string, handlers ...router.HandlerFunc) {
+	var h []gin.HandlerFunc
+	for index := range handlers {
+		if index == 0 {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[0](NewMyContext(ctx))
+			})
+		} else {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[index](NewMyContext(ctx))
+				ctx.Next()
+			})
+		}
+	}
+	r.Engine.GET(path, h...)
+	// r.Engine.GET(path, func(ctx *gin.Context) {
+	// 	h(NewMyContext(ctx))
+	// })
 }
 
-func (r *ginRouter) POST(path string, h handlerFunc) {
-	r.Engine.POST(path, func(ctx *gin.Context) {
-		h(NewMyContext(ctx))
-	})
+func (r *ginRouter) POST(path string, handlers ...router.HandlerFunc) {
+	var h []gin.HandlerFunc
+	for index := range handlers {
+		if index == 0 {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[0](NewMyContext(ctx))
+			})
+		} else {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[index](NewMyContext(ctx))
+				ctx.Next()
+			})
+		}
+	}
+	r.Engine.POST(path, h...)
+	// r.Engine.POST(path, func(ctx *gin.Context) {
+	// 	h(NewMyContext(ctx))
+	// })
+}
+
+func (r *ginRouter) PUT(path string, handlers ...router.HandlerFunc) {
+	var h []gin.HandlerFunc
+	for index := range handlers {
+		if index == 0 {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[0](NewMyContext(ctx))
+			})
+		} else {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[index](NewMyContext(ctx))
+				ctx.Next()
+			})
+		}
+	}
+	r.Engine.PUT(path, h...)
+	// r.Engine.PUT(path, func(ctx *gin.Context) {
+	// 	h(NewMyContext(ctx))
+	// })
+}
+
+func (r *ginRouter) PATCH(path string, handlers ...router.HandlerFunc) {
+	var h []gin.HandlerFunc
+	for index := range handlers {
+		if index == 0 {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[0](NewMyContext(ctx))
+			})
+		} else {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[index](NewMyContext(ctx))
+				ctx.Next()
+			})
+		}
+	}
+	r.Engine.PATCH(path, h...)
+	// r.Engine.PATCH(path, func(ctx *gin.Context) {
+	// 	h(NewMyContext(ctx))
+	// })
+}
+
+func (r *ginRouter) DELETE(path string, handlers ...router.HandlerFunc) {
+	var h []gin.HandlerFunc
+	for index := range handlers {
+		if index == 0 {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[0](NewMyContext(ctx))
+			})
+		} else {
+			h = append(h, func(ctx *gin.Context) {
+				handlers[index](NewMyContext(ctx))
+				ctx.Next()
+			})
+		}
+	}
+	r.Engine.DELETE(path, h...)
+	// r.Engine.DELETE(path, func(ctx *gin.Context) {
+	// 	h(NewMyContext(ctx))
+	// })
+}
+
+func (r *ginRouter) Use(mwf ...router.HandlerFunc) {
+	var h []gin.HandlerFunc
+	for index := range mwf {
+		h = append(h, func(ctx *gin.Context) {
+			mwf[index](NewMyContext(ctx))
+			ctx.Next()
+		})
+	}
+	r.Engine.Use(h...)
 }
 
 func (r *ginRouter) StartHttp() {

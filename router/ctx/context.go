@@ -6,4 +6,5 @@ type IContext interface {
 	ReadBody() ([]byte, error)
 	Param(key string) string
 	Query(key string) string
+	RequestURI() string
 }

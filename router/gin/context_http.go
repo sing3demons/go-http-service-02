@@ -17,6 +17,10 @@ func (c *myContext) JSON(code int, obj any) {
 	c.Context.JSON(code, obj)
 }
 
+func (c *myContext) RequestURI() string {
+	return c.Context.Request.RequestURI
+}
+
 func (c *myContext) Bind(code int, obj any) {
 	c.Context.ShouldBind(obj)
 }
@@ -31,4 +35,8 @@ func (c *myContext) Param(key string) string {
 }
 func (c *myContext) Query(key string) string {
 	return c.Context.Query(key)
+}
+
+func (c *myContext) Next() {
+	c.Context.Next()
 }
