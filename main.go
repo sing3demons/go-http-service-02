@@ -9,7 +9,8 @@ import (
 
 func main() {
 	// r := NewGinRouter()
-	r := NewMuxRouter()
+	// r := NewMuxRouter()
+	r := NewFiberRouter()
 	r.Use(func(c ctx.IContext) {
 		log.Println(c.RequestURI())
 	})

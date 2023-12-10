@@ -136,9 +136,12 @@ func (r *ginRouter) Use(mwf ...router.HandlerFunc) {
 }
 
 func (r *ginRouter) StartHttp() {
-	port := "8080"
+	PORT := os.Getenv("PORT")
+	if PORT == "" {
+		PORT = "8080"
+	}
 	sv := &http.Server{
-		Addr:    ":" + port,
+		Addr:    ":" + PORT,
 		Handler: r.Engine,
 	}
 
